@@ -14,6 +14,7 @@ const (
 
 type PcState struct {
 	MacAddress string
+	HostName   string
 	State      PcStatus
 }
 
