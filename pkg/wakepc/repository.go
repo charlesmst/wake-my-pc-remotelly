@@ -20,18 +20,23 @@ type PcState struct {
 type PcCommand string
 
 const (
-	Shutdown PcStatus = "shutdown"
-	TurnOn   PcStatus = "turnon"
+	Shutdown PcCommand = "shutdown"
+	Wol      PcCommand = "wol"
 )
+
+type PcCommandEvent struct {
+	Command PcCommand
+	Args    []string
+}
 
 type PcStateStorage interface {
 	Save(cxt context.Context, state PcState) error
 	Find(ctx context.Context, mac string) (PcState, error)
-	Listen(ctx context.Context, mac string, listen chan PcCommand) error
+	Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error
 }
 
 type PcStateStorageMock struct {
-	listener chan PcCommand
+	listener chan PcCommandEvent
 	values   map[string]PcState
 }
 
@@ -54,7 +59,7 @@ func (p *PcStateStorageMock) Find(cxt context.Context, mac string) (PcState, err
 	return value, nil
 }
 
-func (p *PcStateStorageMock) Listen(ctx context.Context, mac string, listen chan PcCommand) error {
+func (p *PcStateStorageMock) Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error {
 	p.listener = listen
 	return nil
 

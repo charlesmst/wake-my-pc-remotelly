@@ -25,9 +25,10 @@ func NewPcDaemon(storage PcStateStorage, controller PcController) Pc {
 		mac:        mac[0],
 	}
 }
+
 func (p *Pc) Start(ctx context.Context) {
 
-	c := make(chan PcCommand)
+	c := make(chan PcCommandEvent)
 	err := p.Storage.Listen(ctx, p.mac, c)
 	if err != nil {
 		log.Fatalf("could not start listening commands")
@@ -52,9 +53,9 @@ func (p *Pc) report(ctx context.Context) {
 	})
 }
 
-func (p *Pc) handle(ctx context.Context, command PcCommand) {
-	switch command {
-	case PcCommand(Shutdown):
+func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
+	switch command.Command {
+	case Shutdown:
 
 		p.Controller.Shutdown(ctx)
 	default:

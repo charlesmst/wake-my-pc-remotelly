@@ -40,7 +40,7 @@ func TestPc(t *testing.T) {
 			t.Fatalf("didn't start listener")
 		}
 
-		storage.listener <- PcCommand(Shutdown)
+		storage.listener <- PcCommandEvent{Command: Shutdown}
 
 		time.Sleep(100 * time.Millisecond)
 		if controller.lastState != "shutdown" {
