@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"github.com/charlesmst/wake-my-pc-remotelly/pkg/backend"
@@ -11,11 +12,30 @@ import (
 func main() {
 	storage := backend.NewFirebaseStorage()
 
-	r, err := storage.FindAll(context.Background())
-	if err != nil {
-		fmt.Printf("failed to read %v", err)
+	flag.Parse()
+	args := flag.Args()
+
+	if len(args) < 1 {
+		help()
+		return
 	}
-	printState(r)
+	command := args[0]
+	switch command {
+
+	case "ls":
+
+		r, err := storage.FindAll(context.Background())
+		if err != nil {
+			fmt.Printf("failed to read %v", err)
+		}
+		printState(r)
+	default:
+		help()
+
+	}
+}
+func help() {
+	print("usage: ls|shutdown")
 }
 func printState(pcs []wakepc.PcState) {
 

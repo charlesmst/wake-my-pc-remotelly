@@ -26,7 +26,7 @@ func (p *PcState) RealState() PcStatus {
 	}
 
 	considerOn := time.Now().Add(time.Minute * -1).Unix()
-	if p.ReadTime < considerOn{
+	if p.ReadTime < considerOn {
 		return Off
 	}
 	return p.State
