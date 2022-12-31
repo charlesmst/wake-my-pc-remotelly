@@ -8,8 +8,8 @@ import (
 type PcStatus string
 
 const (
-	Off PcStatus = "on"
-	On           = "off"
+	Off PcStatus = "off"
+	On           = "on"
 )
 
 type PcState struct {
