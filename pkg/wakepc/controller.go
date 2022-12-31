@@ -46,7 +46,7 @@ func (c *MacController) FindState(ctx context.Context) (PcState, error) {
 }
 
 func (c *MacController) Shutdown(ctx context.Context) error {
-	cmd := exec.Command("shutdown -f now")
+	cmd := exec.Command("shutdown", "-f" "now")
 	err := cmd.Run()
 	return err
 }
@@ -55,6 +55,47 @@ func (c *MacController) Wol(ctx context.Context, mac string) error {
 	cmd := exec.Command("wakeonlan", mac)
 	err := cmd.Run()
 	return err
+}
+
+
+
+type LinuxController struct {
+}
+
+var _ PcController = &LinuxController{}
+
+func (c *LinuxController) FindState(ctx context.Context) (PcState, error) {
+	return readState()
+}
+
+func (c *LinuxController) Shutdown(ctx context.Context) error {
+	cmd := exec.Command("shutdown", "-n", "now")
+	err := cmd.Run()
+	return err
+}
+
+func (c *LinuxController) Wol(ctx context.Context, mac string) error {
+	cmd := exec.Command("wol", mac)
+	err := cmd.Run()
+	return err
+}
+
+
+type WindowsController struct {
+}
+
+var _ PcController = &WindowsController{}
+
+func (c *WindowsController) FindState(ctx context.Context) (PcState, error) {
+	return readState()
+}
+
+func (c *WindowsController) Shutdown(ctx context.Context) error {
+	return exec.Command("cmd", "/C", "shutdown", "/s").Run()
+}
+
+func (c *WindowsController) Wol(ctx context.Context, mac string) error {
+	return fmt.Errorf("unsupported wol command")
 }
 
 func readState() (PcState, error) {
@@ -94,6 +135,9 @@ func ResolveController() PcController {
 
 	case "darwin":
 		return &MacController{}
+
+	case "windows":
+		return &WindowsController{}
 	default:
 		log.Fatalf("unsupported OS")
 		return nil
