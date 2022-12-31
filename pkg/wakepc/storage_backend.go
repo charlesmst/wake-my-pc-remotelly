@@ -42,6 +42,7 @@ const (
 type PcCommandEvent struct {
 	Command PcCommand
 	Args    []string
+	Target  string
 }
 
 type PcStateStorage interface {
