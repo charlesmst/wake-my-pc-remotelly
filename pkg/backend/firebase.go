@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	firebase "firebase.google.com/go"
@@ -23,9 +24,20 @@ var _ wakepc.PcStateStorage = &FirebaseStorage{}
 
 func NewFirebaseStorage() FirebaseStorage {
 
-	opt := option.WithCredentialsFile("firebase-credentials.json")
+	credentialsFile := os.Getenv("FIREBASE_CREDENTIALS_FILE")
+	if credentialsFile == ""{
+		log.Fatalf("could not read credentials file, please inform FIREBASE_CREDENTIALS_FILE environment variable")
+	}
+
+	databaseURL := os.Getenv("FIREBASE_DATABASE_URL")
+	if databaseURL == ""{
+		log.Fatalf("could not find database url, please inform FIREBASE_DATABASE_URL environment variable")
+	}
+
+
+	opt := option.WithCredentialsFile(credentialsFile)
 	conf := &firebase.Config{
-		DatabaseURL: "https://wake-my-pc-bbc7c-default-rtdb.firebaseio.com",
+		DatabaseURL: databaseURL ,
 	}
 	app, err := firebase.NewApp(context.Background(), conf, opt)
 	if err != nil {

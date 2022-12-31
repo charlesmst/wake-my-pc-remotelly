@@ -61,14 +61,14 @@ func main() {
 				return
 			}
 		}
-		fmt.Println("successfully sent shutdown command")
+		fmt.Println("successfully sent wol command to all targets")
 	default:
 		help()
 
 	}
 }
 func help() {
-	print("usage: ls|shutdown")
+	print("usage: ls|shutdown [target]\n")
 }
 func printState(pcs []wakepc.PcState) {
 
