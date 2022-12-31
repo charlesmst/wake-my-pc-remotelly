@@ -28,6 +28,11 @@ type PcStateStorageMock struct {
 
 var _ PcStateStorage = &PcStateStorageMock{}
 
+func NewPcStateStorageMock() PcStateStorageMock {
+	m := make(map[string]PcState)
+	return PcStateStorageMock{values: m}
+}
+
 func (p *PcStateStorageMock) Save(cxt context.Context, state PcState) error {
 	p.values[state.MacAddress] = state
 	return nil

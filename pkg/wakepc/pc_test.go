@@ -8,7 +8,7 @@ import (
 
 func TestPc(t *testing.T) {
 
-	storage := PcStateStorageMock{}
+	storage := NewPcStateStorageMock()
 	pc := NewPcDaemon(&storage)
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -21,7 +21,7 @@ func TestPc(t *testing.T) {
 		t.Fatalf("got error findig state %v", err)
 	}
 
-	if result.State != Off {
+	if result.State != On {
 		t.Fatalf("got wrong state %v", result)
 	}
 
