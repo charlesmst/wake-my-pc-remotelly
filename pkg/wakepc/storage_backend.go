@@ -64,5 +64,4 @@ func (p *PcStateStorageMock) Find(cxt context.Context, mac string) (PcState, err
 func (p *PcStateStorageMock) Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error {
 	p.listener = listen
 	return nil
-
 }
