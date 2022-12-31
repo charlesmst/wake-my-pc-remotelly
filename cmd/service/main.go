@@ -8,13 +8,6 @@ import (
 )
 
 func main() {
-	// storage := wakepc.NewPcStateStorageMock()
-	// controller := wakepc.PcControllerMock{}
-	// daemon := wakepc.NewPcDaemon(&storage, &controller)
-	// daemon.Start(context.Background())
-	// c := wakepc.LinuxController{}
-	// err := c.Shutdown(context.Background())
-	// log.Printf("%v", err)
 	storage := backend.NewFirebaseStorage()
 
 	controller := wakepc.LinuxController{}

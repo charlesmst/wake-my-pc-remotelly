@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"time"
 )
 
 type PcController interface {
@@ -61,7 +62,12 @@ func readState() (PcState, error) {
 		return PcState{}, fmt.Errorf("could not get mac address %w", err)
 	}
 	host, _ := os.Hostname()
-	return PcState{MacAddress: mac[0], HostName: host, State: On}, nil
+	return PcState{
+		MacAddress: mac[0],
+		HostName:   host,
+		State:      On,
+		ReadTime:   time.Now().Unix(),
+	}, nil
 }
 
 func getMacAddr() ([]string, error) {

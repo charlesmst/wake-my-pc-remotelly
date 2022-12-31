@@ -16,6 +16,7 @@ type PcState struct {
 	MacAddress string
 	HostName   string
 	State      PcStatus
+	ReadTime   int64
 }
 
 type PcCommand string
