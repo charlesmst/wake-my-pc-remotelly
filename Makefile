@@ -54,7 +54,7 @@ $(DARWIN):
 	env GOOS=darwin GOARCH=amd64 go build -i -v -o $(DARWIN) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/service/main.go
 
 run-daemon:
-	go run cmd/sevice/main.go
+	go run cmd/service/main.go
 test:
 	go test ./...
 
