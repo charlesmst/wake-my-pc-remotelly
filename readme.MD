@@ -18,6 +18,8 @@ As backend, this uses firebase realtime database. Create a project and download 
 ### Linux
 - wol: `yay -Sy wol`
 
+### Windows
+- WIP
 
 ## Daemon
 Make the service run in the startup of your machine. Currently it supports windows, mac and linux.

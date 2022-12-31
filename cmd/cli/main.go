@@ -26,6 +26,12 @@ func main() {
 	}
 	switch command {
 
+	case "daemon":
+
+	controller := wakepc.ResolveController()
+
+	daemon := wakepc.NewPcDaemon(&storage, controller)
+	daemon.Start(context.Background())
 	case "ls":
 
 		printState(r)
