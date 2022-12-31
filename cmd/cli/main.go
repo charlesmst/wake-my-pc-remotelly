@@ -28,10 +28,10 @@ func main() {
 
 	case "daemon":
 
-	controller := wakepc.ResolveController()
+		controller := wakepc.ResolveController()
 
-	daemon := wakepc.NewPcDaemon(&storage, controller)
-	daemon.Start(context.Background())
+		daemon := wakepc.NewPcDaemon(&storage, controller)
+		daemon.Start(context.Background())
 	case "ls":
 
 		printState(r)

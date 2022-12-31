@@ -22,19 +22,19 @@ linux: $(LINUX) $(LINUX_ARM)## Build for Linux
 darwin: $(DARWIN) $(DARWIN_ARM)## Build for Darwin (macOS)
 
 $(WINDOWS): bin
-	env GOOS=windows GOARCH=amd64 go build -i -v -o $(WINDOWS) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
+	env GOOS=windows GOARCH=amd64 go build -v -o $(WINDOWS) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
 
 $(LINUX): bin
-	env GOOS=linux GOARCH=amd64 go build -i -v -o $(LINUX) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
+	env GOOS=linux GOARCH=amd64 go build -v -o $(LINUX) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
 
 $(LINUX_ARM): bin
-	env GOOS=linux GOARCH=arm64 go build -i -v -o $(LINUX_ARM) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
+	env GOOS=linux GOARCH=arm64 go build -v -o $(LINUX_ARM) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
 
 $(DARWIN): bin
-	env GOOS=darwin GOARCH=amd64 go build -i -v -o $(DARWIN) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
+	env GOOS=darwin GOARCH=amd64 go build -v -o $(DARWIN) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
 
 $(DARWIN_ARM): bin
-	env GOOS=darwin GOARCH=arm64 go build -i -v -o $(DARWIN_ARM) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
+	env GOOS=darwin GOARCH=arm64 go build -v -o $(DARWIN_ARM) -ldflags="-s -w -X main.version=$(VERSION)"  ./cmd/cli/main.go
 
 clean: ## Remove previous build
 	rm -rf ./bin/
