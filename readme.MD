@@ -7,9 +7,11 @@ You will need at least one machine running in the network you want to turn on th
 Setup your machine to run the daemon. This daemon reports current status and receives commands such as shutdown and wake on lan commands to turn on the machine you want.
 
 As backend, this uses firebase realtime database. Create a project and download the credentials file, you will need:
-- FIREBASE_DATABASE_URL: URL of the firebase real time database, get it from admin firebase page
-- FIREBASE_CREDENTIALS_FILE(default: `firebase_credentials.json`): is the path to the firebase credentials file.
+- `FIREBASE_DATABASE_URL`: URL of the firebase real time database, get it from admin firebase page
+- `FIREBASE_CREDENTIALS_FILE`: is the path to the firebase credentials file.
 
+## Building
+You will need golang version 1.18+ and `make`. Simply run `make build` and the binary should be generated in `bin` folder
 
 ## Dependencies
 ### MacOS
