@@ -1,8 +1,9 @@
 package main
 
-import "log"
+import (
+	"github.com/charlesmst/wake-my-pc-remotelly/pkg/wakepc"
+)
 
-
-func main(){
-        log.Printf("starting")
+func main() {
+	wakepc.Start()
 }
