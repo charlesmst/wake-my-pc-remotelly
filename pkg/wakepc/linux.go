@@ -2,8 +2,6 @@ package wakepc
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"os/exec"
 )
 
