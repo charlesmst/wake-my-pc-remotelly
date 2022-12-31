@@ -69,8 +69,30 @@ func (c *LinuxController) Shutdown(ctx context.Context) error {
 func (c *LinuxController) Wol(ctx context.Context, mac string) error {
 	cmd := exec.Command("wol", mac)
 	err := cmd.Run()
+	return err
+}
+
+type MacController struct {
+}
+
+var _ PcController = &MacController{}
+
+func (c *MacController) FindState(ctx context.Context) (PcState, error) {
+	mac, err := getMacAddr()
 	if err != nil {
-		return err
+		return PcState{}, fmt.Errorf("could not get mac address %w", err)
 	}
-	return nil
+	return PcState{MacAddress: mac[0], State: On}, nil
+}
+
+func (c *MacController) Shutdown(ctx context.Context) error {
+	cmd := exec.Command("shutdown -f now")
+	err := cmd.Run()
+	return err
+}
+
+func (c *MacController) Wol(ctx context.Context, mac string) error {
+	cmd := exec.Command("wakeonlan", mac)
+	err := cmd.Run()
+	return err
 }
