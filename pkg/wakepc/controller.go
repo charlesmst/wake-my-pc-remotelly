@@ -46,7 +46,7 @@ func (c *MacController) FindState(ctx context.Context) (PcState, error) {
 }
 
 func (c *MacController) Shutdown(ctx context.Context) error {
-	cmd := exec.Command("shutdown", "-f" "now")
+	cmd := exec.Command("shutdown", "-f", "now")
 	err := cmd.Run()
 	return err
 }
@@ -56,8 +56,6 @@ func (c *MacController) Wol(ctx context.Context, mac string) error {
 	err := cmd.Run()
 	return err
 }
-
-
 
 type LinuxController struct {
 }
@@ -79,7 +77,6 @@ func (c *LinuxController) Wol(ctx context.Context, mac string) error {
 	err := cmd.Run()
 	return err
 }
-
 
 type WindowsController struct {
 }

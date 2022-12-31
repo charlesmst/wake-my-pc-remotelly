@@ -57,11 +57,15 @@ func (p *Pc) report(ctx context.Context) {
 }
 
 func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
+	log.Printf("received command %v\n", command)
 	switch command.Command {
 	case Shutdown:
 
 		p.Controller.Shutdown(ctx)
 	case Wol:
+		if len(command.Args) != 1 {
+			return
+		}
 		p.Controller.Wol(ctx, command.Args[0])
 	default:
 		log.Printf("ignoring command %s", command)
