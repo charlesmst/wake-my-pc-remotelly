@@ -46,7 +46,7 @@ func (c *MacController) FindState(ctx context.Context) (PcState, error) {
 }
 
 func (c *MacController) Shutdown(ctx context.Context) error {
-	cmd := exec.Command("shutdown", "-f", "now")
+	cmd := exec.Command("shutdown", "-h", "now")
 	err := cmd.Run()
 	return err
 }

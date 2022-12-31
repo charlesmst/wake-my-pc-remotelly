@@ -61,7 +61,10 @@ func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
 	switch command.Command {
 	case Shutdown:
 
-		p.Controller.Shutdown(ctx)
+		err := p.Controller.Shutdown(ctx)
+		if err != nil {
+			log.Printf("failed to execute shutdown %v\n", err)
+		}
 	case Wol:
 		if len(command.Args) != 1 {
 			return
