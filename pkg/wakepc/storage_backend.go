@@ -35,6 +35,7 @@ type PcStateStorage interface {
 	Save(cxt context.Context, state PcState) error
 	Find(ctx context.Context, mac string) (PcState, error)
 	Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error
+	Push(ctx context.Context, mac string, event PcCommandEvent) error
 }
 
 type PcStateStorageMock struct {
@@ -63,5 +64,9 @@ func (p *PcStateStorageMock) Find(cxt context.Context, mac string) (PcState, err
 
 func (p *PcStateStorageMock) Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error {
 	p.listener = listen
+	return nil
+}
+
+func (p *PcStateStorageMock) Push(ctx context.Context, mac string, event PcCommandEvent) error {
 	return nil
 }

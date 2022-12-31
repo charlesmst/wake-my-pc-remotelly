@@ -53,9 +53,7 @@ func (p *FirebaseStorage) Find(ctx context.Context, mac string) (wakepc.PcState,
 func (p *FirebaseStorage) Listen(ctx context.Context, mac string, listen chan wakepc.PcCommandEvent) error {
 	log.Printf("starting listeners for %v", mac)
 	go func() {
-
 		for {
-
 			select {
 			case <-ctx.Done():
 				break
@@ -68,7 +66,6 @@ func (p *FirebaseStorage) Listen(ctx context.Context, mac string, listen chan wa
 				}
 
 				if message.Command == "" {
-
 					continue
 				}
 				p.messagesRef.Child(mac).Delete(ctx)
@@ -79,4 +76,8 @@ func (p *FirebaseStorage) Listen(ctx context.Context, mac string, listen chan wa
 	}()
 	return nil
 
+}
+
+func (p *FirebaseStorage) Push(ctx context.Context, mac string, event wakepc.PcCommandEvent) error {
+	return p.messagesRef.Child(mac).Set(ctx, event)
 }
