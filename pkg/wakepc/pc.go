@@ -71,7 +71,7 @@ func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
 		}
 		p.Controller.Wol(ctx, command.Args[0])
 	default:
-		log.Printf("ignoring command %s", command)
+		log.Printf("ignoring command %s", command.Command)
 	}
 
 }

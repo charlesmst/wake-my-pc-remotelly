@@ -14,6 +14,7 @@ import (
 type PcController interface {
 	FindState(ctx context.Context) (PcState, error)
 	Shutdown(ctx context.Context) error
+	Restart(ctx context.Context) error
 	Wol(ctx context.Context, mac string) error
 }
 
@@ -28,6 +29,11 @@ func (c *PcControllerMock) FindState(ctx context.Context) (PcState, error) {
 
 func (c *PcControllerMock) Shutdown(ctx context.Context) error {
 	c.lastState = "shutdown"
+	return nil
+}
+
+func (c *PcControllerMock) Restart(ctx context.Context) error {
+	c.lastState = "restart"
 	return nil
 }
 
@@ -47,6 +53,12 @@ func (c *MacController) FindState(ctx context.Context) (PcState, error) {
 
 func (c *MacController) Shutdown(ctx context.Context) error {
 	cmd := exec.Command("shutdown", "-h", "now")
+	err := cmd.Run()
+	return err
+}
+
+func (c *MacController) Restart(ctx context.Context) error {
+	cmd := exec.Command("shutdown", "-r", "now")
 	err := cmd.Run()
 	return err
 }
@@ -72,6 +84,12 @@ func (c *LinuxController) Shutdown(ctx context.Context) error {
 	return err
 }
 
+func (c *LinuxController) Restart(ctx context.Context) error {
+	cmd := exec.Command("reboot")
+	err := cmd.Run()
+	return err
+}
+
 func (c *LinuxController) Wol(ctx context.Context, mac string) error {
 	cmd := exec.Command("wol", mac)
 	err := cmd.Run()
@@ -89,6 +107,10 @@ func (c *WindowsController) FindState(ctx context.Context) (PcState, error) {
 
 func (c *WindowsController) Shutdown(ctx context.Context) error {
 	return exec.Command("cmd", "/C", "shutdown", "/s").Run()
+}
+
+func (c *WindowsController) Restart(ctx context.Context) error {
+	return exec.Command("cmd", "/C", "shutdown", "/r").Run()
 }
 
 func (c *WindowsController) Wol(ctx context.Context, mac string) error {
