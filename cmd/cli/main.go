@@ -55,8 +55,7 @@ func main() {
 		}
 
 		for _, pc := range r {
-
-			err := storage.Push(context.Background(), pc.MacAddress, wakepc.NewShutdownCommand(t.MacAddress))
+			err := storage.Push(context.Background(), pc.MacAddress, wakepc.NewWolCommand(t.MacAddress))
 			if err != nil {
 				fmt.Printf("failed to push message %v", err)
 				return
