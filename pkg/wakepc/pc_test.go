@@ -11,7 +11,8 @@ func TestPc(t *testing.T) {
 	t.Run("reposts status", func(t *testing.T) {
 
 		storage := NewPcStateStorageMock()
-		controller := PcControllerMock{}
+		controller := PcControllerMock{
+			fakeMac: "fakemac"}
 		pc := NewPcDaemon(&storage, &controller)
 		ctx, cancel := context.WithCancel(context.Background())
 		go pc.Start(ctx)
@@ -20,7 +21,7 @@ func TestPc(t *testing.T) {
 
 		cancel()
 
-		result, err := storage.Find(context.Background(), pc.mac)
+		result, err := storage.Find(context.Background(), controller.fakeMac)
 		if err != nil {
 			t.Fatalf("got error findig state %v", err)
 		}

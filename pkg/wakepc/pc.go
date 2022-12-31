@@ -3,33 +3,31 @@ package wakepc
 import (
 	"context"
 	"log"
-	"net"
 	"time"
 )
 
 type Pc struct {
 	Storage    PcStateStorage
 	Controller PcController
-	mac        string
 }
 
 func NewPcDaemon(storage PcStateStorage, controller PcController) Pc {
 
-	mac, err := getMacAddr()
-	if err != nil {
-		log.Fatalf("got an error finding mac address %s", err)
-	}
 	return Pc{
 		Storage:    storage,
 		Controller: controller,
-		mac:        mac[0],
 	}
 }
 
 func (p *Pc) Start(ctx context.Context) {
 
+	initial, err := p.Controller.FindState(ctx)
+	if err != nil {
+		log.Fatalf("could not find initial state %v", err)
+	}
 	c := make(chan PcCommandEvent)
-	err := p.Storage.Listen(ctx, p.mac, c)
+
+	err = p.Storage.Listen(ctx, initial.MacAddress, c)
 	if err != nil {
 		log.Fatalf("could not start listening commands")
 	}
@@ -46,10 +44,14 @@ func (p *Pc) Start(ctx context.Context) {
 	}
 }
 func (p *Pc) report(ctx context.Context) {
-	p.Storage.Save(ctx, PcState{
-		MacAddress: p.mac,
-		State:      On,
-	})
+	state, err := p.Controller.FindState(ctx)
+
+	if err != nil {
+		log.Printf("failed to get state %v", err)
+		return
+	}
+
+	p.Storage.Save(ctx, state)
 }
 
 func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
@@ -63,19 +65,4 @@ func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
 		log.Printf("ignoring command %s", command)
 	}
 
-}
-
-func getMacAddr() ([]string, error) {
-	ifas, err := net.Interfaces()
-	if err != nil {
-		return nil, err
-	}
-	var as []string
-	for _, ifa := range ifas {
-		a := ifa.HardwareAddr.String()
-		if a != "" {
-			as = append(as, a)
-		}
-	}
-	return as, nil
 }
