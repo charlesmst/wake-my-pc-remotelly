@@ -51,6 +51,22 @@ func main() {
 		}
 		fmt.Println("successfully sent shutdown command")
 
+	case "restart":
+
+		t := findTargetMac(r, args[1])
+
+		if t.MacAddress == "" {
+			fmt.Println("target not found")
+			return
+		}
+
+		err := storage.Push(context.Background(), t.MacAddress, wakepc.NewRestartCommand(t.MacAddress))
+		if err != nil {
+			fmt.Printf("failed to push message %v", err)
+			return
+		}
+		fmt.Println("successfully sent restart command")
+
 	case "wol":
 
 		t := findTargetMac(r, args[1])

@@ -7,6 +7,13 @@ func NewShutdownCommand(mac string) PcCommandEvent {
 	}
 }
 
+func NewRestartCommand(mac string) PcCommandEvent {
+	return PcCommandEvent{
+		Command: Restart,
+		Target:  mac,
+	}
+}
+
 func NewWolCommand(mac string) PcCommandEvent {
 	return PcCommandEvent{
 		Command: Wol,
