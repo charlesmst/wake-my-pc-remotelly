@@ -8,12 +8,11 @@ import (
 
 func TestPc(t *testing.T) {
 
-	storage := NewPcStateStorageMock()
-	controller := PcControllerMock{}
-	pc := NewPcDaemon(&storage, &controller)
-
 	t.Run("reposts status", func(t *testing.T) {
 
+		storage := NewPcStateStorageMock()
+		controller := PcControllerMock{}
+		pc := NewPcDaemon(&storage, &controller)
 		ctx, cancel := context.WithCancel(context.Background())
 		go pc.Start(ctx)
 
@@ -32,10 +31,14 @@ func TestPc(t *testing.T) {
 	})
 	t.Run("shutdown pc", func(t *testing.T) {
 
-		ctx, cancel := context.WithCancel(context.Background())
+		storage := NewPcStateStorageMock()
+		controller := PcControllerMock{}
+		pc := NewPcDaemon(&storage, &controller)
+		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 		go pc.Start(ctx)
 		defer cancel()
 
+		time.Sleep(1 * time.Millisecond)
 		if storage.listener == nil {
 			t.Fatalf("didn't start listener")
 		}
@@ -45,6 +48,30 @@ func TestPc(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 		if controller.lastState != "shutdown" {
 			t.Fatalf("pc didn't shut down %v", controller.lastState)
+		}
+
+	})
+
+	t.Run("wol other pc pc", func(t *testing.T) {
+		storage := NewPcStateStorageMock()
+		controller := PcControllerMock{}
+		pc := NewPcDaemon(&storage, &controller)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+		go pc.Start(ctx)
+		defer cancel()
+
+		time.Sleep(1 * time.Millisecond)
+
+		if storage.listener == nil {
+			t.Fatalf("didn't start listener")
+		}
+
+		storage.listener <- PcCommandEvent{Command: Wol, Args: []string{"somepc"}}
+
+		time.Sleep(100 * time.Millisecond)
+		if controller.lastState != "wol somepc" {
+			t.Fatalf("pc didn't wol %v", controller.lastState)
 		}
 
 	})

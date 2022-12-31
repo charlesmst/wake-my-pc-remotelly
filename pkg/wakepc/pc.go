@@ -40,10 +40,9 @@ func (p *Pc) Start(ctx context.Context) {
 			return
 		case command := <-c:
 			p.handle(ctx, command)
-		default:
+		case <-time.After(100 * time.Millisecond):
 			p.report(ctx)
 		}
-		time.Sleep(100 * time.Millisecond)
 	}
 }
 func (p *Pc) report(ctx context.Context) {
@@ -58,6 +57,8 @@ func (p *Pc) handle(ctx context.Context, command PcCommandEvent) {
 	case Shutdown:
 
 		p.Controller.Shutdown(ctx)
+	case Wol:
+		p.Controller.Wol(ctx, command.Args[0])
 	default:
 		log.Printf("ignoring command %s", command)
 	}
