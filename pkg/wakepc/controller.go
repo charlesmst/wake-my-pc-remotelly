@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
 )
 
@@ -32,6 +33,37 @@ func (c *PcControllerMock) Wol(ctx context.Context, mac string) error {
 	return nil
 }
 
+type MacController struct {
+}
+
+var _ PcController = &MacController{}
+
+func (c *MacController) FindState(ctx context.Context) (PcState, error) {
+	return readState()
+}
+
+func (c *MacController) Shutdown(ctx context.Context) error {
+	cmd := exec.Command("shutdown -f now")
+	err := cmd.Run()
+	return err
+}
+
+func (c *MacController) Wol(ctx context.Context, mac string) error {
+	cmd := exec.Command("wakeonlan", mac)
+	err := cmd.Run()
+	return err
+}
+
+func readState() (PcState, error) {
+
+	mac, err := getMacAddr()
+	if err != nil {
+		return PcState{}, fmt.Errorf("could not get mac address %w", err)
+	}
+	host, _ := os.Hostname()
+	return PcState{MacAddress: mac[0], HostName: host, State: On}, nil
+}
+
 func getMacAddr() ([]string, error) {
 	ifas, err := net.Interfaces()
 	if err != nil {
@@ -45,30 +77,4 @@ func getMacAddr() ([]string, error) {
 		}
 	}
 	return as, nil
-}
-
-
-type MacController struct {
-}
-
-var _ PcController = &MacController{}
-
-func (c *MacController) FindState(ctx context.Context) (PcState, error) {
-	mac, err := getMacAddr()
-	if err != nil {
-		return PcState{}, fmt.Errorf("could not get mac address %w", err)
-	}
-	return PcState{MacAddress: mac[0], State: On}, nil
-}
-
-func (c *MacController) Shutdown(ctx context.Context) error {
-	cmd := exec.Command("shutdown -f now")
-	err := cmd.Run()
-	return err
-}
-
-func (c *MacController) Wol(ctx context.Context, mac string) error {
-	cmd := exec.Command("wakeonlan", mac)
-	err := cmd.Run()
-	return err
 }
