@@ -55,6 +55,9 @@ $(DARWIN):
 
 run-daemon:
 	go run cmd/service/main.go
+
+run-cli:
+	go run cmd/cli/main.go
 test:
 	go test ./...
 

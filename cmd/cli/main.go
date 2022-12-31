@@ -2,17 +2,19 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/charlesmst/wake-my-pc-remotelly/pkg/backend"
-	"github.com/charlesmst/wake-my-pc-remotelly/pkg/wakepc"
 )
 
 func main() {
 	storage := backend.NewFirebaseStorage()
 
-	controller := wakepc.ResolveController()
+	r, err := storage.FindAll(context.Background())
+	if err != nil{
+		fmt.Printf("failed to read %v", err)
+	}
+	fmt.Printf("%v", r)
 
-	daemon := wakepc.NewPcDaemon(&storage, controller)
-	daemon.Start(context.Background())
 
 }

@@ -2,6 +2,7 @@ package backend
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -48,6 +49,25 @@ func (p *FirebaseStorage) Find(ctx context.Context, mac string) (wakepc.PcState,
 		return state, err
 	}
 	return state, nil
+}
+
+func (p *FirebaseStorage) FindAll(ctx context.Context) ([]wakepc.PcState, error) {
+
+	l := make([]wakepc.PcState, 0)
+
+	results, err := p.stateRef.OrderByKey().GetOrdered(ctx)
+	if err != nil {
+		log.Fatalln("Error querying database:", err)
+	}
+	for _, r := range results {
+		var d wakepc.PcState
+		if err := r.Unmarshal(&d); err != nil {
+			return nil, fmt.Errorf("error unmarshaling results %w", err)
+		}
+		l = append(l, d)
+
+	}
+	return l, nil
 }
 
 func (p *FirebaseStorage) Listen(ctx context.Context, mac string, listen chan wakepc.PcCommandEvent) error {

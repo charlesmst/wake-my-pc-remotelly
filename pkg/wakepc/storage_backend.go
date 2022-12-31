@@ -34,6 +34,7 @@ type PcCommandEvent struct {
 type PcStateStorage interface {
 	Save(cxt context.Context, state PcState) error
 	Find(ctx context.Context, mac string) (PcState, error)
+	FindAll(ctx context.Context) ([]PcState, error)
 	Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error
 	Push(ctx context.Context, mac string, event PcCommandEvent) error
 }
@@ -60,6 +61,14 @@ func (p *PcStateStorageMock) Find(cxt context.Context, mac string) (PcState, err
 		return PcState{}, fmt.Errorf("state not found")
 	}
 	return value, nil
+}
+
+func (p *PcStateStorageMock) FindAll(ctx context.Context) ([]PcState, error) {
+	l := make([]PcState, 0)
+	for _, value := range p.values {
+		l = append(l, value)
+	}
+	return l, nil
 }
 
 func (p *PcStateStorageMock) Listen(ctx context.Context, mac string, listen chan PcCommandEvent) error {
