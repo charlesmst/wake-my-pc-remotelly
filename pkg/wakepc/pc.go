@@ -31,6 +31,8 @@ func (p *Pc) Start(ctx context.Context) {
 	if err != nil {
 		log.Fatalf("could not start listening commands")
 	}
+
+	p.report(ctx)
 	for {
 		select {
 		case <-ctx.Done():
@@ -38,7 +40,7 @@ func (p *Pc) Start(ctx context.Context) {
 			return
 		case command := <-c:
 			p.handle(ctx, command)
-		case <-time.After(100 * time.Millisecond):
+		case <-time.After(5000 * time.Millisecond):
 			p.report(ctx)
 		}
 	}
