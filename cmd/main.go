@@ -8,7 +8,8 @@ import (
 
 func main() {
 	storage := wakepc.NewPcStateStorageMock()
-	daemon := wakepc.NewPcDaemon(&storage)
+	controller := wakepc.PcControllerMock{}
+	daemon := wakepc.NewPcDaemon(&storage, &controller)
 	daemon.Start(context.Background())
 
 }

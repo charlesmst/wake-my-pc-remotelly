@@ -4,34 +4,45 @@ import (
 	"context"
 	"log"
 	"net"
+	"time"
 )
 
 type Pc struct {
-	Storage PcStateStorage
-	mac     string
+	Storage    PcStateStorage
+	Controller PcController
+	mac        string
 }
 
-func NewPcDaemon(storage PcStateStorage) Pc {
+func NewPcDaemon(storage PcStateStorage, controller PcController) Pc {
 
 	mac, err := getMacAddr()
 	if err != nil {
 		log.Fatalf("got an error finding mac address %s", err)
 	}
 	return Pc{
-		Storage: storage,
-		mac:     mac[0],
+		Storage:    storage,
+		Controller: controller,
+		mac:        mac[0],
 	}
 }
 func (p *Pc) Start(ctx context.Context) {
 
+	c := make(chan PcCommand)
+	err := p.Storage.Listen(ctx, p.mac, c)
+	if err != nil {
+		log.Fatalf("could not start listening commands")
+	}
 	for {
 		select {
 		case <-ctx.Done():
 			log.Printf("stopping pc daemon")
 			return
+		case command := <-c:
+			p.handle(ctx, command)
 		default:
 			p.report(ctx)
 		}
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 func (p *Pc) report(ctx context.Context) {
@@ -39,6 +50,17 @@ func (p *Pc) report(ctx context.Context) {
 		MacAddress: p.mac,
 		State:      On,
 	})
+}
+
+func (p *Pc) handle(ctx context.Context, command PcCommand) {
+	switch command {
+	case PcCommand(Shutdown):
+
+		p.Controller.Shutdown(ctx)
+	default:
+		log.Printf("ignoring command %s", command)
+	}
+
 }
 
 func getMacAddr() ([]string, error) {
