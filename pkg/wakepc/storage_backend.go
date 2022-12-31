@@ -3,6 +3,7 @@ package wakepc
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 type PcStatus string
@@ -17,6 +18,18 @@ type PcState struct {
 	HostName   string
 	State      PcStatus
 	ReadTime   int64
+}
+
+func (p *PcState) RealState() PcStatus {
+	if p.State != On {
+		return p.State
+	}
+
+	considerOn := time.Now().Add(time.Minute * -1).Unix()
+	if p.ReadTime < considerOn{
+		return Off
+	}
+	return p.State
 }
 
 type PcCommand string
