@@ -3,9 +3,11 @@ package wakepc
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 )
 
@@ -83,4 +85,17 @@ func getMacAddr() ([]string, error) {
 		}
 	}
 	return as, nil
+}
+
+func ResolveController() PcController {
+	switch runtime.GOOS {
+	case "linux":
+		return &LinuxController{}
+
+	case "darwin":
+		return &MacController{}
+	default:
+		log.Fatalf("unsupported OS")
+		return nil
+	}
 }
