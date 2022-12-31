@@ -53,6 +53,29 @@ func TestPc(t *testing.T) {
 
 	})
 
+	t.Run("restart pc", func(t *testing.T) {
+
+		storage := NewPcStateStorageMock()
+		controller := PcControllerMock{}
+		pc := NewPcDaemon(&storage, &controller)
+		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+		go pc.Start(ctx)
+		defer cancel()
+
+		time.Sleep(1 * time.Millisecond)
+		if storage.listener == nil {
+			t.Fatalf("didn't start listener")
+		}
+
+		storage.listener <- PcCommandEvent{Command: Restart}
+
+		time.Sleep(100 * time.Millisecond)
+		if controller.lastState != "restart" {
+			t.Fatalf("pc didn't restart %v", controller.lastState)
+		}
+
+	})
+
 	t.Run("wol other pc pc", func(t *testing.T) {
 		storage := NewPcStateStorageMock()
 		controller := PcControllerMock{}

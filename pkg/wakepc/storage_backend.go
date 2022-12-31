@@ -37,6 +37,7 @@ type PcCommand string
 const (
 	Shutdown PcCommand = "shutdown"
 	Wol      PcCommand = "wol"
+	Restart  PcCommand = "restart"
 )
 
 type PcCommandEvent struct {
