@@ -15,7 +15,7 @@ func (c *LinuxController) FindState(ctx context.Context) (PcState, error) {
 }
 
 func (c *LinuxController) Shutdown(ctx context.Context) error {
-	cmd := exec.Command("shutdown -f now")
+	cmd := exec.Command("shutdown -n now")
 	err := cmd.Run()
 	return err
 }
