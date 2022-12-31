@@ -43,6 +43,7 @@ type PcCommandEvent struct {
 	Command PcCommand
 	Args    []string
 	Target  string
+	Time    int64
 }
 
 type PcStateStorage interface {

@@ -101,6 +101,11 @@ func (p *FirebaseStorage) Listen(ctx context.Context, mac string, listen chan wa
 				}
 				p.messagesRef.Child(mac).Delete(ctx)
 
+				if message.Time < time.Now().Add(-30*time.Second).Unix() {
+					log.Printf("ignoring old event %v\n", message)
+					continue
+				}
+
 				listen <- message
 			}
 		}
@@ -110,5 +115,6 @@ func (p *FirebaseStorage) Listen(ctx context.Context, mac string, listen chan wa
 }
 
 func (p *FirebaseStorage) Push(ctx context.Context, mac string, event wakepc.PcCommandEvent) error {
+	event.Time = time.Now().Unix()
 	return p.messagesRef.Child(mac).Set(ctx, event)
 }
