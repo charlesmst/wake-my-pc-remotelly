@@ -18,5 +18,6 @@ func NewWolCommand(mac string) PcCommandEvent {
 	return PcCommandEvent{
 		Command: Wol,
 		Target:  mac,
+		Args:    []string{mac},
 	}
 }
