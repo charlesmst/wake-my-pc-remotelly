@@ -1,0 +1,14 @@
+[Unit]
+Description=Wake My PC remotelly daemon
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+Environment="FIREBASE_CREDENTIALS_FILE="
+Environment="FIREBASE_DATABASE_URL="
+ExecStart=wakemypc daemon
+
+[Install]
+WantedBy=multi-user.target

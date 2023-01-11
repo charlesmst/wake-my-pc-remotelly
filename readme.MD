@@ -23,9 +23,14 @@ You will need golang version 1.18+ and `make`. Simply run `make build` and the b
 ### Windows
 - WIP
 
+## Instalation
+
+You can build and create a link in your bin folder, just change your architecture `sudo ln -s  $(pwd)/bin/wakemypc_linux_amd64 /usr/bin/wakemypc`
 ## Daemon
 Make the service run in the startup of your machine. Currently it supports windows, mac and linux.
 When setted up run `wakemypc daemon`
+
+Create a service using wakemypc.service file template, place it in `/etc/systemd/system/wakemypc.service` and run `systemctl enable wakemypc.service`
 
 ## Cli
 ### Daemon
